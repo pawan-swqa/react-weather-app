@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { bankActionCreators, State, wheatherActionCreators } from "./state";
 import React, { useEffect } from "react";
+import BarChart from "./components/bar-chart";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>{amount}</h1>
+      {/* <h1>{amount}</h1>
       <button
         onClick={() => {
           depositMoney(10000);
@@ -53,7 +54,11 @@ function App() {
         }}
       >
         Bankrupt
-      </button>
+      </button> */}
+
+      <div style={{width:"50%"}}>
+        <BarChart></BarChart>
+      </div>
     </div>
   );
 }
