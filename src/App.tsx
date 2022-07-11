@@ -2,10 +2,10 @@ import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { bankActionCreators, State, wheatherActionCreators } from "./state";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import BarChart from "./components/bar-chart";
 
-function App() {
+const App:React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const { depositMoney, withdrawMoney, bankrupt } = bindActionCreators(
     bankActionCreators,
