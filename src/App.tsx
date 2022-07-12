@@ -1,70 +1,60 @@
-import "./App.css";
-import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
-import { bankActionCreators, State, wheatherActionCreators } from "./state";
-import { useEffect } from "react";
+import React from "react";
+import { connect } from "react-redux";
 import BarChart from "./components/graphs/bar-chart";
+import { getWheather } from "./state/action-creators/wheather-actions";
 
-// BAR GRAPHS
+class App extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      isDataLoading:false
+    }
+    this.handleClick = this.handleClick.bind(this)
+  }
 
+  handleClick() {
+    console.log(this.props.wheather.wheatherData);
+  }
 
+  async componentDidMount() {
+    this.setState({
+      isDataLoading:true
+    })
+    await this.props.getWheatherData("/todos");
+    this.setState({
+      isDataLoading:false
+    })
+  }
 
+  async componentDidUpdate(prevProps:any) {
+  }
 
-const App:React.FunctionComponent = () => {
-  const dispatch = useDispatch();
-  const { depositMoney, withdrawMoney, bankrupt } = bindActionCreators(
-    bankActionCreators,
-    dispatch
-  );
-  const { getWheather } = bindActionCreators(wheatherActionCreators, dispatch);
-  const amount = useSelector((state: State) => state.bank);
+  render() {
+    if(!this.state.isDataLoading) {
+      console.log(this.props.wheather.wheatherData , "In Component Data")
+    }
+    return (
+      <div className="App">
+        <div style={{ width: "50%" }}>
+          <BarChart></BarChart>
 
-  // ComponentDidMount
-  useEffect(() => {
-    console.log("Behavior before the component is added to the DOM");
-    getWheather("/todos/1");
-  }, []); // Mark [] here.
-
-  const data = useSelector((state: State) => state.wheatherData);
-    console.log(data, "in state");
-
-  //ComponentDidUpdate
-  useEffect(() => {
-    console.log("Behavior when the component receives new state or props.");
-  });
-
-
-
-  return (
-    <div className="App">
-      {/* <h1>{amount}</h1>
-      <button
-        onClick={() => {
-          depositMoney(10000);
-        }}
-      >
-        Deposit
-      </button>
-      <button
-        onClick={() => {
-          withdrawMoney(5000);
-        }}
-      >
-        Withdraw
-      </button>
-      <button
-        onClick={() => {
-          bankrupt();
-        }}
-      >
-        Bankrupt
-      </button> */}
-
-      <div style={{width:"50%"}}>
-        <BarChart></BarChart>
+          <button onClick={() => {
+            this.handleClick()
+          }}></button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    getWheatherData: (url: string) => dispatch(getWheather(url)),
+  };
+};
+
+const mapStateToProps = (state: any) => {
+  return { wheather: state.wheatherData };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
