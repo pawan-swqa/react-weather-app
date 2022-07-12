@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { bankActionCreators, State, wheatherActionCreators } from "./state";
 import { useEffect } from "react";
-import BarChart from "./components/bar-chart";
+import BarChart from "./components/graphs/bar-chart";
+
+// BAR GRAPHS
+
+
+
 
 const App:React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -13,9 +18,6 @@ const App:React.FunctionComponent = () => {
   );
   const { getWheather } = bindActionCreators(wheatherActionCreators, dispatch);
   const amount = useSelector((state: State) => state.bank);
-  // getWheather('/todos/1');
-  // const data = useSelector((state: State) => state.wheatherData);
-  // console.log(data , "in state");
 
   // ComponentDidMount
   useEffect(() => {
@@ -30,6 +32,8 @@ const App:React.FunctionComponent = () => {
   useEffect(() => {
     console.log("Behavior when the component receives new state or props.");
   });
+
+
 
   return (
     <div className="App">
