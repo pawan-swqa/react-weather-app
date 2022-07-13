@@ -1,7 +1,12 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { connect } from "react-redux";
-import BarChart from "./components/graphs/bar-chart";
 import { getWheather } from "./state/action-creators/wheather-actions";
+import RouteLoader from "./components/loaders/loader";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+
+// Getting Components using react lazy loading
+const BarGraphComponent = lazy(() => import("./components/graphs/bar-chart"));
 
 class App extends React.Component<any, any> {
   constructor(props: any) {
@@ -10,8 +15,8 @@ class App extends React.Component<any, any> {
 
     // This wil be the initial state of the "current component only"
     this.state = {
-      isDataLoading:false
-    }
+      isDataLoading: true,
+    };
 
     // We have to bind every click event in order to access it into the component , or call from direct html
     this.handleClick = this.handleClick.bind(this);
@@ -24,38 +29,59 @@ class App extends React.Component<any, any> {
 
   // An react life cycle method , this will be called once at the start of page load
   async componentDidMount() {
-    this.setState({
-      isDataLoading:true
-    })
     await this.props.getWheatherData("/todos");
     this.setState({
-      isDataLoading:false
-    })
+      isDataLoading: false,
+    });
   }
 
   // An react life cycle method  , this will be called every time we change state ,
-  // so that we can handle data changing very well , we can compare "prevProps" and "Props" 
+  // so that we can handle data changing very well , we can compare "prevProps" and "Props"
   // in order to check if something is changed or not
-  async componentDidUpdate(prevProps:any) { 
-  }
+  async componentDidUpdate(prevProps: any) {}
 
   render() {
     // Render() method excecutes before ComponentDidMount and ComponentDidUpdate
     // here we can destruct the properties like , Props and State
 
-    // Handlling data using is loading method will be fine because  , 
+    // Handlling data using is loading method will be fine because  ,
     // in react we have multiple cases where will be getting emply data into the same element
-    if(!this.state.isDataLoading) {
-      console.log(this.props.wheather.wheatherData , "In Component Data")
+    if (!this.state.isDataLoading) {
+      console.log(this.props.wheather.wheatherData, "In Component Data");
     }
 
     // Return method holds the Html content of the component
     // Does not require head or body tag , can start from direct tags
     return (
-      <div className="App">
-        <div style={{ width: "50%" }}>
-          <BarChart></BarChart>
-        </div>
+      <div className="App" id="wrapper">
+        <Suspense
+          fallback={
+            <div className="container">
+              <div className="row">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    marginTop: "40vh",
+                    width: "100%",
+                  }}
+                >
+                  <RouteLoader width="col-md-4 col-lg-4" />
+                </div>
+              </div>
+            </div>
+          }
+        >
+          <div id="main-content">
+            <Router>
+              <Routes>
+                <Route path="/" element={<BarGraphComponent />} />
+                <Route path="/try" element={<BarGraphComponent />} />
+              </Routes>
+            </Router>
+          </div>
+        </Suspense>
       </div>
     );
   }
