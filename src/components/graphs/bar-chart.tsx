@@ -49,8 +49,15 @@ export const data = {
   ],
 }; // ENDS HERE
 
-const BarChart: React.FunctionComponent = ({}) => {
-  return <Bar options={options} data={data} />;
+const BarChart: React.FunctionComponent = (props: any) => {
+  return (
+    <div
+      className="main-content"
+      style={{ height: props?.style?.height, width: props?.style?.width }}
+    >
+      <Bar options={options} data={data} />
+    </div>
+  );
 };
 
 export default BarChart;
